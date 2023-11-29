@@ -9,12 +9,12 @@
 
 //my ctools
 
-const COMMERCETOOLS_PROJECT_KEY='commercetools-dev-project-crkn'
-const COMMERCETOOLS_CLIENT_SECRET='adH7VK_bttFB3MTbx5RrEpISjDfSaVMq'
-const COMMERCETOOLS_CLIENT_ID='7dtEomHVw61JxPoW2pArSsAp'
+const COMMERCETOOLS_PROJECT_KEY='botonds-project-key'
+const COMMERCETOOLS_CLIENT_SECRET='3eGGv266YWDBLWxQMFwYr5MfqpOmFaOD'
+const COMMERCETOOLS_CLIENT_ID='THZYA9GUp4GsbzQbbLMfj6p7'
 const COMMERCETOOLS_AUTH_URL='https://auth.europe-west1.gcp.commercetools.com'
 const COMMERCETOOLS_API_URL='https://api.europe-west1.gcp.commercetools.com'
-const COMMERCETOOLS_SCOPES='manage_project:commercetools-dev-project-crkn'
+const COMMERCETOOLS_SCOPES='manage_shopping_lists:botonds-project-key manage_categories:botonds-project-key manage_payments:botonds-project-key view_payments:botonds-project-key manage_product_selections:botonds-project-key manage_my_payments:botonds-project-key manage_project_settings:botonds-project-key manage_connectors:botonds-project-key view_customers:botonds-project-key manage_my_shopping_lists:botonds-project-key manage_orders:botonds-project-key manage_customers:botonds-project-key manage_products:botonds-project-key manage_my_profile:botonds-project-key manage_types:botonds-project-key manage_my_orders:botonds-project-key'
 
 export const commerceToolsConfig = {
   projectKey: COMMERCETOOLS_PROJECT_KEY,
