@@ -3,11 +3,25 @@ import {
     createHttpClient,
     createAuthForClientCredentialsFlow,
   } from '@commercetools/sdk-client-v2'
+import SdkAuth from '@commercetools/sdk-auth';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk'
 import fetch from 'node-fetch'
 import { commerceToolsConfig } from '../../config/config';
+import axios from 'axios';
 
-const { projectKey, clientId, clientSecret, apiUrl, authUrl } = commerceToolsConfig;
+const { projectKey, clientId, clientSecret, apiUrl, authUrl, username, password } = commerceToolsConfig;
+
+const authClient = new SdkAuth({
+  host: authUrl,
+  projectKey: projectKey,
+  credentials: {
+    clientId: clientId,
+    clientSecret: clientSecret,
+  },
+  disableRefreshToken: false,
+  scopes: [`manage_project:${projectKey}`],
+  fetch,
+});
 
 const authMiddlewareOptions = {
     host: authUrl,
@@ -42,10 +56,67 @@ const authMiddlewareOptions = {
   function getCategories() {
     return apiRoot.withProjectKey({ projectKey }).categories().get().execute()
   }
+
+  function getCarts() {
+    return apiRoot.withProjectKey({ projectKey }).carts().get().execute()
+  }
+
+  function getCartByUserId(customerId) {
+    return apiRoot.withProjectKey({ projectKey }).carts().withCustomerId({customerId}).get().execute()
+  }
+
+  const getToken = async () => {
+    try {
+      const response = await axios.post(
+        `${authUrl}/oauth/token`,
+        null,
+        {
+          auth: {
+            username: clientId,
+            password: clientSecret,
+          },
+          params: {
+            grant_type: 'client_credentials',
+            scope: `manage_project:${projectKey}`,
+          },
+        }
+      );
   
+      const accessToken = response.data.access_token;
+      return accessToken;
+    } catch (error) {
+      console.error('Error:', error.response ? error.response.data : error.message);
+      throw error;
+    }
+  };
+
+
+
+  const obtainAccessToken = async () => {
+
+    const customerToken = await authClient.customerPasswordFlow({
+      username: username,
+      password: password,
+      });
+
+        return customerToken;
+    };
+
+  const checkoutConfig = {
+    projectKey: 'commercetools-dev-project-crkn',
+    applicationKey: 'RY7vGZ1FMETr96',
+    host: 'https://app.checkout.europe-west1.gcp.commercetools.com',
+    callbackUrl: 'https://frontend-test.mms.precomposer.shop/en'
+}
+
   module.exports = {
     getProjectDetails,
-    getCategories
+    getCategories,
+    getCarts,
+    getToken,
+    obtainAccessToken,
+    checkoutConfig,
+    getCartByUserId
   }
   
 

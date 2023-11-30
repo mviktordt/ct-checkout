@@ -15,11 +15,17 @@ const COMMERCETOOLS_CLIENT_ID='7dtEomHVw61JxPoW2pArSsAp'
 const COMMERCETOOLS_AUTH_URL='https://auth.europe-west1.gcp.commercetools.com'
 const COMMERCETOOLS_API_URL='https://api.europe-west1.gcp.commercetools.com'
 const COMMERCETOOLS_SCOPES='manage_project:commercetools-dev-project-crkn'
+const USERNAME = 'kenadams@example.org'
+const PASSWORD = 'pap7x9qo'
 
 export const commerceToolsConfig = {
   projectKey: COMMERCETOOLS_PROJECT_KEY,
   clientId: COMMERCETOOLS_CLIENT_ID,
   clientSecret: COMMERCETOOLS_CLIENT_SECRET,
   apiUrl: COMMERCETOOLS_API_URL,
-  authUrl: COMMERCETOOLS_AUTH_URL
+  authUrl: COMMERCETOOLS_AUTH_URL,
+  username: USERNAME,
+  password: PASSWORD
 };
+
+//url: `https://auth.europe-west1.gcp.commercetools.com/oauth/commercetools-dev-project-crkn/customers/token?grant_type=password&username=jane.doe@example.com&password=5B[#,p{szX!`,
