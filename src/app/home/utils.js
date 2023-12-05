@@ -10,8 +10,18 @@ export  const extractCustomerIdFromScope = (inputString) => {
     }
     }
 
+export const findCartsArrayByCustomerIdWithActiveStatus = (allCarts, customerId) => {
+    const foundArray = allCarts.filter(cart => cart.cartState === "Active" && cart.customerId === customerId);
+
+    if (foundArray.length) {
+        return foundArray;
+    } else {
+        return null;
+    }
+} 
+
 export const findCartIdByCustomerId = (cartArray, customerId) => {
-    const foundObject = cartArray.find(obj => obj.customerId === customerId);
+    const foundObject = cartArray.find(cart => cart.customerId === customerId);
   
     if (foundObject) {
       return foundObject.id;

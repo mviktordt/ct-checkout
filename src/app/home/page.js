@@ -7,7 +7,7 @@ import  {
     getCarts
   } from '../ct-client';
 import { buttonStyle, subsection } from './styles';
-import { extractCustomerIdFromScope, findCartIdByCustomerId } from './utils';
+import { extractCustomerIdFromScope, findCartsArrayByCustomerIdWithActiveStatus } from './utils';
 
 const Checkout = dynamic(
     () => import('./Checkout'),
@@ -21,16 +21,16 @@ const HomeController = () => {
   const [accessToken, setAccessToken] = useState(null);
   const [cartId, setCartId] = useState(null);
   const [customerId, setCustomerId] = useState(null);
+  const [hasActiveCarts, setHasActiveCarts] = useState(true);
   const isMounted = useRef(false);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const obtainTokenAndCustomerId = async () => {
       try {
         const token = await obtainAccessToken();
         setAccessToken(token.access_token);
         const customerIdExtr = extractCustomerIdFromScope(token.scope);
         setCustomerId(customerIdExtr);
-        console.log('the extrected customer id is: ', customerIdExtr);
         //TODO - An active cart for the customer ****** does not exist.
         // getCartByUserId(customerIdExtr).then(cartId=>{
         //   console.log('cart id is: ', cartId);
@@ -43,40 +43,58 @@ const HomeController = () => {
     if (!isMounted.current) {
       isMounted.current = true;
       if (accessToken === null) {
-        fetchData();
+        obtainTokenAndCustomerId();
       }
     }
   }, [accessToken]);
 
     useEffect(() => {
-      const fetchData = async () => {
+      const obtainCartId = async () => {
         try {
           const response = await getCarts();
           const allCarts = response.body.results;
-          const cartId = findCartIdByCustomerId(allCarts, customerId);
-          setCartId(cartId);
+          const activeCarts = findCartsArrayByCustomerIdWithActiveStatus(allCarts, customerId);
+          if(!activeCarts){
+            setHasActiveCarts(false);
+            return;
+          }
+          const lastIndex = activeCarts.length-1;
+          const lastActiveCart = activeCarts[lastIndex];
+          setCartId(lastActiveCart.id);
         } catch (error) {
-          console.error('Error fetching data:', error);
+          console.error('Error fetching cartId:', error);
         }
       };
   
       if (customerId !== null) {
-        fetchData();
+        obtainCartId();
       }
   
     }, [customerId]);
 
   return (
-    customerId&&cartId&&accessToken&&<>
-    <h1>Checkout test</h1>
+    <>
+    {cartId&&customerId&&accessToken&&<div>
+      <h1>Checkout test</h1>
       <div
-      style={subsection}
-    >
-      <h5>Access Token: {accessToken}</h5>
-      <h5>Customer Id: {customerId}</h5>
-      <h5 style={{marginTop:'15px' }}>Cart ID: {cartId}</h5>
-      <Checkout cartId={cartId} accessToken={accessToken}/>
+          style={subsection}
+        >
+        <h5>Access Token: {accessToken}</h5>
+        <h5>Customer Id: {customerId}</h5>
+        <h5 style={{marginTop:'15px' }}>Cart ID: {cartId}</h5>
+        <Checkout cartId={cartId} accessToken={accessToken}/>
     </div>
+    </div>} 
+    {
+      !hasActiveCarts&&<div>
+      <h1>Checkout test</h1>
+      <div
+          style={subsection}
+      >
+        <h1>This customer has no active cart associated with them</h1>
+    </div>
+    </div>
+    }
     </>
   );
 };
